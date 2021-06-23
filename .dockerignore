@@ -1,0 +1,5 @@
+.git
+.gitlab-ci.yml
+.gitignore
+node_modules
+deployment.yaml
