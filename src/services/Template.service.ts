@@ -1,61 +1,10 @@
 import Handlebars from 'handlebars';
-import sendgrid from '@sendgrid/mail';
-
-import { Queue, Worker } from 'bullmq';
 
 import { NotFoundError, ServiceError } from '../lib/errors';
 import Validate from '.';
 
-import { generalLogger } from '../lib/logger';
-
 import TemplateRepo from '../database/repositories/TemplateRepo';
-import config, { AppEnvironmentEnum } from '../config';
-
-const sendMailQueue = new Queue('mail');
-
-const mailSender = new Worker('sending', async (job) => {
-  const { data } = job;
-  const {
-    template, subject, html, params,
-  } = data;
-  try {
-    if (config.app.env === AppEnvironmentEnum.PRODUCTION) {
-      await sendgrid.send({
-        from: {
-          email: template.from,
-          name: template.senderName,
-        },
-        to: params.to,
-        subject,
-        html,
-      });
-    } else {
-      await (async () => {
-        return new Promise(() => {
-          return true;
-        });
-      })();
-    }
-
-    return {
-      data: {},
-      message: 'email sent',
-    };
-  } catch (error) {
-    generalLogger.error('unable to send email', error);
-    throw new ServiceError('unable to send email');
-  }
-});
-
-mailSender.on('completed', (job) => {
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  console.log(`${job.id} has completed!`);
-});
-
-mailSender.on('failed', (job: { id: any }, err: { message: any }) => {
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  console.log(`${job.id} has failed with ${err.message}`);
-});
+import sendMailQueue from '../scripts/mailSender';
 
 export default class TemplateService {
   @Validate({
@@ -128,14 +77,11 @@ export default class TemplateService {
     if (!template) {
       throw new NotFoundError('template does not exist');
     }
-    const {
-      name, from, senderName, content, subject,
-    } = params;
 
     const data = Object.entries(params).filter(([key, value]) => {
       return value !== null && value !== undefined && key !== 'templateId';
     });
-    console.log('Update to be made:', data);
+
     template = await TemplateRepo.updateTemplateById(template.id, Object.fromEntries(data));
 
     return {
@@ -166,14 +112,13 @@ export default class TemplateService {
     if (!template.subject) {
       throw new ServiceError('template `subject` is not set');
     }
-    console.log(template);
+    // console.log(template);
     const renderSubject = Handlebars.compile(template.subject);
     const subject = renderSubject(params.fields);
 
     const renderBody = Handlebars.compile(template.content);
     const html = renderBody(params.fields);
 
-    sendgrid.setApiKey(''); // TODO: this should come from the package configuration
     await sendMailQueue.add('sending', {
       template,
       subject,
