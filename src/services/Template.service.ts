@@ -78,11 +78,8 @@ export default class TemplateService {
       throw new NotFoundError('template does not exist');
     }
 
-    const data = Object.entries(params).filter(([key, value]) => {
-      return value !== null && value !== undefined && key !== 'templateId';
-    });
-
-    template = await TemplateRepo.updateTemplateById(template.id, Object.fromEntries(data));
+    const { templateId, ...updates } = params;
+    template = await TemplateRepo.updateTemplateById(template.id, updates);
 
     return {
       data: template,

@@ -5,15 +5,16 @@ import config, { AppEnvironmentEnum } from '../config';
 import { generalLogger } from '../lib/logger';
 import { ServiceError } from '../lib/errors';
 
-const sendMailQueue = new Queue('mail');
+const MAIL_QUEUE_NAME = 'MAIL_QUEUE';
 
-const mailSender = new Worker('mail', async (job: any) => {
+const sendMailQueue = new Queue(MAIL_QUEUE_NAME);
+const mailSender = new Worker(MAIL_QUEUE_NAME, async (job) => {
   const { data } = job;
   const {
     template, subject, html, params,
   } = data;
 
-  sendgrid.setApiKey('SG.'); // TODO: this should come from the package configuration
+  sendgrid.setApiKey(''); // TODO: this should come from the package configuration
   try {
     if (config.app.env === AppEnvironmentEnum.PRODUCTION) {
       await sendgrid.send({
