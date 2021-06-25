@@ -3,7 +3,7 @@ import { wrapHandler } from '.';
 import TemplateService from '../services/Template.service';
 
 export default class TemplateController {
-  public static getTemplates = wrapHandler((req: Request) => {
+  public static getTemplates = wrapHandler(() => {
     return TemplateService.getTemplates();
   });
 
@@ -21,12 +21,14 @@ export default class TemplateController {
 
   public static updateTemplate = wrapHandler((req: Request) => {
     return TemplateService.updateTemplate({
+      ...req.params,
       ...req.body,
     });
   });
 
   public static sendTemplate = wrapHandler((req: Request) => {
     return TemplateService.sendTemplate({
+      ...req.params,
       ...req.body,
     });
   });
