@@ -4,7 +4,10 @@ import { NotFoundError, ServiceError } from '../lib/errors';
 import Validate from '.';
 
 import TemplateRepo from '../database/repositories/TemplateRepo';
-import sendMailQueue from '../scripts/mailSender';
+import MailQueue from '../queue/mail.queue';
+
+// eslint-disable-next-line no-console
+console.log('Enpoints are added ....');
 
 export default class TemplateService {
   @Validate({
@@ -109,14 +112,13 @@ export default class TemplateService {
     if (!template.subject) {
       throw new ServiceError('template `subject` is not set');
     }
-    // console.log(template);
     const renderSubject = Handlebars.compile(template.subject);
     const subject = renderSubject(params.fields);
 
     const renderBody = Handlebars.compile(template.content);
     const html = renderBody(params.fields);
 
-    await sendMailQueue.add('sending', {
+    await MailQueue.add(template.subject, {
       template,
       subject,
       html,

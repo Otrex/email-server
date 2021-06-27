@@ -8,7 +8,7 @@ export const script = async () => {
 const run = async () => {
   if (require.main === module) {
     try {
-      await DatabaseConnection.connect();
+      await DatabaseConnection.connectTest();
       await script();
     } catch (e) {
       scriptLogger.error(e);

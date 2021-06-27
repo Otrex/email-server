@@ -1,7 +1,7 @@
 import DatabaseConnection from './src/database/connection';
 
 beforeAll(async () => {
-  await DatabaseConnection.connect();
+  await DatabaseConnection.connectTest();
 });
 
 afterAll(async () => {
