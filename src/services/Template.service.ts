@@ -6,9 +6,6 @@ import Validate from '.';
 import TemplateRepo from '../database/repositories/TemplateRepo';
 import MailQueue from '../queue/mail.queue';
 
-// eslint-disable-next-line no-console
-console.log('Enpoints are added ....');
-
 export default class TemplateService {
   @Validate({
     $$strict: 'remove',
@@ -94,12 +91,22 @@ export default class TemplateService {
     templateId: { type: 'uuid' },
     to: { type: 'email', normalize: true },
     fields: { type: 'object', optional: true },
+    options: {
+      type: 'object',
+      optional: true,
+      props: {
+        delay: { type: 'int', optional: true },
+        priority: { type: 'int', positive: true, optional: true },
+      },
+    },
   })
   public static sendTemplate = async (params: {
     templateId: string;
     to: string;
     fields?: Record<string, any>;
+    options?: Record<string, any>;
   }) => {
+    const { options } = params;
     const template = await TemplateRepo.getTemplateById(params.templateId);
     if (!template) {
       throw new NotFoundError('template does not exist');
@@ -118,12 +125,16 @@ export default class TemplateService {
     const renderBody = Handlebars.compile(template.content);
     const html = renderBody(params.fields);
 
-    await MailQueue.add(template.subject, {
-      template,
-      subject,
-      html,
-      params,
-    });
+    await MailQueue.add(
+      template.subject,
+      {
+        template,
+        subject,
+        html,
+        params,
+      },
+      options,
+    );
 
     return { data: 'Message is sending' };
   };

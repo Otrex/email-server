@@ -1,4 +1,4 @@
-import { Worker, Job } from 'bullmq';
+import { Worker, Job, QueueScheduler } from 'bullmq';
 import MailSender from './mail.sender';
 import { QUEUE_NAME } from './variables';
 
@@ -26,5 +26,9 @@ export default (config: QueueConfig) => {
       limiter: config.limiter,
     },
   );
-  return { worker };
+
+  const scheduler = new QueueScheduler(QUEUE_NAME, {
+    connection: config.connection,
+  });
+  return { worker, scheduler };
 };
