@@ -1,7 +1,7 @@
 import { Entity, Column } from 'typeorm';
 import { GenericEntity } from './generic';
 
-@Entity()
+@Entity('email_template')
 export default class Template extends GenericEntity {
   @Column()
   name!: string;
@@ -17,4 +17,7 @@ export default class Template extends GenericEntity {
 
   @Column({ type: 'longtext', nullable: true })
   content!: string;
+
+  @Column()
+  slug!: string;
 }

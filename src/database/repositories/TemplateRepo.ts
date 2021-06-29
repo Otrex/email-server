@@ -1,5 +1,5 @@
 import { getConnection } from 'typeorm';
-import { APPNAME } from '../../config';
+import { APPNAME } from '../../configTypes';
 import Template from '../entities/Template';
 
 export default class TemplateRepo {
@@ -7,11 +7,16 @@ export default class TemplateRepo {
     return getConnection(APPNAME).getRepository(Template).findOne(id, {});
   };
 
+  public static getTemplateBySlug = async (slug: string) => {
+    // console.log(getConnection(APPNAME), slug)
+    return getConnection(APPNAME).getRepository(Template).findOne({ slug }, {});
+  };
+
   public static getTemplates = async () => {
     return getConnection(APPNAME)
       .getRepository(Template)
       .find({
-        select: ['id', 'name', 'senderName', 'subject'],
+        select: ['id', 'name', 'senderName', 'subject', 'slug'],
         order: {
           createdAt: 'DESC',
         },

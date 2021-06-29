@@ -13,7 +13,7 @@ export enum AppEnvironmentEnum {
 
 export const APPNAME = 'email-server';
 export interface Config {
-  app: express.Application;
+  app?: express.Application;
   db: {
     type: 'mysql' | 'postgres';
     host: string;

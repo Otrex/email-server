@@ -1,4 +1,4 @@
-import { AppEnvironmentEnum, APPNAME, Config } from '../config';
+import { AppEnvironmentEnum, APPNAME, Config } from '../configTypes';
 
 const databaseConfig = (config: Config) => ({
   name: APPNAME,

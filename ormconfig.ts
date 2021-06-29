@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
-import config, { AppEnvironmentEnum } from './src/config';
+import config, { AppEnvironmentEnum } from './src/configTypes';
 
 const connectionOptions: ConnectionOptions = {
   type: 'mysql',

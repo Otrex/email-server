@@ -10,6 +10,7 @@ export default class TemplateService {
   @Validate({
     $$strict: 'remove',
     name: { type: 'string', trim: true },
+    slug: { type: 'string', optional: true },
     from: { type: 'string', trim: true, optional: true },
     senderName: { type: 'string', trim: true, optional: true },
     subject: { type: 'string', trim: true, optional: true },
@@ -19,15 +20,23 @@ export default class TemplateService {
     from?: string;
     senderName?: string;
     subject?: string;
+    slug?: string;
   }) => {
     const {
-      name, from, senderName, subject,
+      name, from, senderName, subject, slug,
     } = params;
+
+    if (slug) {
+      const templateExists = await TemplateRepo.getTemplateBySlug(slug);
+      if (templateExists) throw new ServiceError('Please use a unique slug');
+    }
+
     const template = await TemplateRepo.createTemplate({
       name,
       from,
       senderName,
       subject,
+      slug,
     });
 
     return {
@@ -37,6 +46,13 @@ export default class TemplateService {
 
   public static getTemplates = async () => {
     const templates = await TemplateRepo.getTemplates();
+    return {
+      data: templates,
+    };
+  };
+
+  public static getTemplateBySlug = async (slug: string) => {
+    const templates = await TemplateRepo.getTemplateBySlug(slug);
     return {
       data: templates,
     };
@@ -60,6 +76,7 @@ export default class TemplateService {
     $$strict: 'remove',
     templateId: { type: 'uuid' },
     name: { type: 'string', trim: true, optional: true },
+    slug: { type: 'string', optional: true },
     from: { type: 'email', normalize: true, optional: true },
     subject: { type: 'string', trim: true, optional: true },
     senderName: { type: 'string', trim: true, optional: true },
@@ -72,6 +89,7 @@ export default class TemplateService {
     senderName?: string;
     subject?: string;
     content?: string;
+    slug?: string;
   }) => {
     let template = await TemplateRepo.getTemplateById(params.templateId);
     if (!template) {
@@ -95,8 +113,8 @@ export default class TemplateService {
       type: 'object',
       optional: true,
       props: {
-        delay: { type: 'int', optional: true },
-        priority: { type: 'int', positive: true, optional: true },
+        delay: { type: 'number', optional: true },
+        priority: { type: 'number', positive: true, optional: true },
       },
     },
   })

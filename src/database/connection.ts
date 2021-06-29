@@ -6,7 +6,6 @@ export default class DatabaseConnection {
   static connection: Connection | undefined;
 
   static async connect(config: any) {
-    console.log(config);
     await createConnections([config]);
     return getConnectionManager().connections;
   }

@@ -1,7 +1,6 @@
 import Express, { NextFunction, Response, Request } from 'express';
 import setup from '../../src';
-import config from '../../src/config';
-import notFoundHandler from '../../src/middleware/application/notFoundHandler';
+import config from '../../src/configTypes';
 
 const app = Express();
 
