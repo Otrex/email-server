@@ -8,12 +8,14 @@ pull the test-update branch
 
 Use `yarn link <project_name>` to link it to the host end
 
-**To Setup**
+# To Setup
 
 import setupEmailServer from 'email-server'
 
 Pass in the config in the form
-`interface Config {
+
+``
+interface Config {
   app?: express.Application;
   db: {
     type: 'mysql' | 'postgres';
@@ -38,7 +40,8 @@ Pass in the config in the form
     key: string;
   };
   env?: string;
-}`
+}
+``
 
 Note: `app` is optional as it can be imported from 'email-server/app'
 To use the send mail utility `sendMailUtility`, import it from 'email-server/utils'.
