@@ -1,7 +1,7 @@
 import { NotFoundError } from '../lib/errors';
 import TemplateService from '../services/Template.service';
 
-type Params = {
+export type Params = {
   to: string;
   fields: any;
   options?: { delay: number; priority: number };

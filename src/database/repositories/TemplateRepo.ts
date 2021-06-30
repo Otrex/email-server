@@ -8,7 +8,6 @@ export default class TemplateRepo {
   };
 
   public static getTemplateBySlug = async (slug: string) => {
-    // console.log(getConnection(APPNAME), slug)
     return getConnection(APPNAME).getRepository(Template).findOne({ slug }, {});
   };
 
