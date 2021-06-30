@@ -4,7 +4,6 @@
   "description": "Email Server",
   "main": "src/index.ts",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
