@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 import { consoleFormat } from 'winston-console-format';
-import config, { AppEnvironmentEnum } from '../../config';
+import config, { AppEnvironmentEnum } from '../../configTypes';
 
 const { TEST, LOCAL } = AppEnvironmentEnum;
 

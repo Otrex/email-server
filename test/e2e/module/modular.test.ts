@@ -1,26 +1,30 @@
-import supertest from 'supertest';
+import supertest, { SuperTest, Test } from 'supertest';
 import faker from 'faker';
-import app from '../../../src/app';
+import app from '../../mocks';
 
-const server = supertest(app);
+let server: SuperTest<Test>;
 
 let templates: { id: string }[];
 
-beforeAll(async () => {});
+beforeAll(() => {
+  server = supertest(app);
+});
 
 describe('Template Router', () => {
   describe('Create template', () => {
     it('should create a template', async () => {
-      const res = await server.post('/templates').send({
+      const res = await server.post('/email-server/templates').send({
         name: faker.company.companyName(),
       });
-      expect(res.status).toEqual(200);
+      // eslint-disable-next-line no-console
+      if (res.statusCode === 500 || res.statusCode === 404) console.log(res);
+      expect(res.statusCode).toEqual(200);
     });
   });
 
   describe('Fetch templates', () => {
     it('should fetch templates', async () => {
-      const res = await server.get('/templates').send();
+      const res = await server.get('/email-server/templates').send();
       expect(res.status).toEqual(200);
       expect(res.body.data).toBeDefined();
       templates = res.body.data;
@@ -29,7 +33,7 @@ describe('Template Router', () => {
 
   describe('Fetch template', () => {
     it('should fetch template with templateId', async () => {
-      const res = await server.get(`/templates/${templates[0].id}`).send();
+      const res = await server.get(`/email-server/templates/${templates[0].id}`).send();
       expect(res.status).toEqual(200);
       expect(res.body.data).toBeDefined();
     });
@@ -37,7 +41,7 @@ describe('Template Router', () => {
 
   describe('Update template with templateId', () => {
     it('should update template', async () => {
-      const res = await server.patch(`/templates/${templates[0].id}`).send({
+      const res = await server.patch(`/email-server/templates/${templates[0].id}`).send({
         name: 'treasure',
         from: 'obisike@yahoo.com',
         senderName: 'Obisike',
@@ -50,7 +54,7 @@ describe('Template Router', () => {
 
   describe('Send Mail Failed due to subject not added', () => {
     it('should send mail', async () => {
-      const res = await server.post(`/templates/${templates[0].id}/send`).send({
+      const res = await server.post(`/email-server/templates/${templates[0].id}/send`).send({
         to: 'trex@gmail.com',
         fields: { to: 'rex@yahoo.com' },
       });
@@ -61,7 +65,7 @@ describe('Template Router', () => {
 
   describe('Should update subject', () => {
     it('should update subject mail', async () => {
-      const res = await server.patch(`/templates/${templates[0].id}`).send({
+      const res = await server.patch(`/email-server/templates/${templates[0].id}`).send({
         subject: 'Flitaa Mail',
       });
       expect(res.status).toEqual(200);
@@ -71,7 +75,7 @@ describe('Template Router', () => {
 
   describe('Send Mail', () => {
     it('should send mail', async () => {
-      const res = await server.post(`/templates/${templates[0].id}/send`).send({
+      const res = await server.post(`/email-server/templates/${templates[0].id}/send`).send({
         to: 'trex@gmail.com',
         fields: { to: 'rex@yahoo.com' },
       });

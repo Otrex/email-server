@@ -3,6 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/build/', '/build/__test__'],
   collectCoverage: false,
-  testTimeout: 20000,
+  testTimeout: 50000,
   setupFilesAfterEnv: ['./jest.setup.ts'],
 };

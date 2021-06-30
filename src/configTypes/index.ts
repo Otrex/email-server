@@ -1,4 +1,5 @@
 import env from 'dotenv';
+import express from 'express';
 
 env.config();
 
@@ -10,7 +11,35 @@ export enum AppEnvironmentEnum {
   PRODUCTION = 'production',
 }
 
-type Config = {
+export const APPNAME = 'email-server';
+export interface Config {
+  app?: express.Application;
+  db: {
+    type: 'mysql' | 'postgres';
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password: string;
+  };
+  redis: {
+    host: string; // localhost
+    port: number; // 6789
+  };
+  queue: {
+    concurrency: number;
+    limiter: {
+      max: number;
+      duration: number;
+    };
+  };
+  mail: {
+    key: string;
+  };
+  env?: string;
+}
+
+type MockAppConfig = {
   env: {
     isProduction: boolean;
     isDevelopment: boolean;
@@ -22,6 +51,7 @@ type Config = {
     port: number;
   };
   db: {
+    type: 'mysql' | 'postgres';
     host: string;
     port: number;
     database: string;
@@ -32,7 +62,7 @@ type Config = {
 
 const isTestEnvironment = process.env.APP_ENV === AppEnvironmentEnum.TEST;
 
-const config: Config = {
+const config: MockAppConfig = {
   env: {
     isProduction: process.env.NODE_ENV === AppEnvironmentEnum.PRODUCTION,
     isDevelopment: process.env.NODE_ENV === AppEnvironmentEnum.DEVELOPMENT,
@@ -44,6 +74,7 @@ const config: Config = {
     port: +(process.env.PORT || 3000),
   },
   db: {
+    type: 'mysql',
     host: process.env.DB_HOST || 'localhost',
     port: +(process.env.DB_PORT || 3306),
     database: isTestEnvironment ? process.env.TEST_DB_DATABASE! : process.env.DB_DATABASE!,

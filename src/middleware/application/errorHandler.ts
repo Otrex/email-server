@@ -8,7 +8,7 @@ import {
   AuthorizationError,
 } from '../../lib/errors';
 import { errorLogger } from '../../lib/logger';
-import config from '../../config';
+import config from '../../configTypes';
 
 export default (
   err: GenericError,

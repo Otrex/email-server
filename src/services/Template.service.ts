@@ -1,17 +1,16 @@
 import Handlebars from 'handlebars';
-import sendgrid from '@sendgrid/mail';
 
 import { NotFoundError, ServiceError } from '../lib/errors';
 import Validate from '.';
 
-import { generalLogger } from '../lib/logger';
-
 import TemplateRepo from '../database/repositories/TemplateRepo';
+import MailQueue from '../queue/mail.queue';
 
 export default class TemplateService {
   @Validate({
     $$strict: 'remove',
     name: { type: 'string', trim: true },
+    slug: { type: 'string', optional: true },
     from: { type: 'string', trim: true, optional: true },
     senderName: { type: 'string', trim: true, optional: true },
     subject: { type: 'string', trim: true, optional: true },
@@ -21,15 +20,23 @@ export default class TemplateService {
     from?: string;
     senderName?: string;
     subject?: string;
+    slug?: string;
   }) => {
     const {
-      name, from, senderName, subject,
+      name, from, senderName, subject, slug,
     } = params;
+
+    if (slug) {
+      const templateExists = await TemplateRepo.getTemplateBySlug(slug);
+      if (templateExists) throw new ServiceError('Please use a unique slug');
+    }
+
     const template = await TemplateRepo.createTemplate({
       name,
       from,
       senderName,
       subject,
+      slug,
     });
 
     return {
@@ -39,6 +46,13 @@ export default class TemplateService {
 
   public static getTemplates = async () => {
     const templates = await TemplateRepo.getTemplates();
+    return {
+      data: templates,
+    };
+  };
+
+  public static getTemplateBySlug = async (slug: string) => {
+    const templates = await TemplateRepo.getTemplateBySlug(slug);
     return {
       data: templates,
     };
@@ -62,7 +76,9 @@ export default class TemplateService {
     $$strict: 'remove',
     templateId: { type: 'uuid' },
     name: { type: 'string', trim: true, optional: true },
-    from: { type: 'email', normalize: true },
+    slug: { type: 'string', optional: true },
+    from: { type: 'email', normalize: true, optional: true },
+    subject: { type: 'string', trim: true, optional: true },
     senderName: { type: 'string', trim: true, optional: true },
     content: { type: 'string', optional: true },
   })
@@ -73,20 +89,15 @@ export default class TemplateService {
     senderName?: string;
     subject?: string;
     content?: string;
+    slug?: string;
   }) => {
     let template = await TemplateRepo.getTemplateById(params.templateId);
     if (!template) {
       throw new NotFoundError('template does not exist');
     }
-    const {
-      name, from, senderName, content,
-    } = params;
-    template = await TemplateRepo.updateTemplateById(template.id, {
-      name,
-      from,
-      senderName,
-      content,
-    });
+
+    const { templateId, ...updates } = params;
+    template = await TemplateRepo.updateTemplateById(template.id, updates);
 
     return {
       data: template,
@@ -98,46 +109,51 @@ export default class TemplateService {
     templateId: { type: 'uuid' },
     to: { type: 'email', normalize: true },
     fields: { type: 'object', optional: true },
+    options: {
+      type: 'object',
+      optional: true,
+      props: {
+        delay: { type: 'number', optional: true },
+        priority: { type: 'number', positive: true, optional: true },
+      },
+    },
   })
   public static sendTemplate = async (params: {
     templateId: string;
     to: string;
     fields?: Record<string, any>;
+    options?: Record<string, any>;
   }) => {
+    const { options } = params;
     const template = await TemplateRepo.getTemplateById(params.templateId);
     if (!template) {
       throw new NotFoundError('template does not exist');
     }
 
     if (!template.from) {
-      throw new ServiceError('template from email is not set');
+      throw new ServiceError('template `from email` is not set');
     }
 
+    if (!template.subject) {
+      throw new ServiceError('template `subject` is not set');
+    }
     const renderSubject = Handlebars.compile(template.subject);
     const subject = renderSubject(params.fields);
 
     const renderBody = Handlebars.compile(template.content);
     const html = renderBody(params.fields);
 
-    sendgrid.setApiKey(''); // TODO: this should come from the package configuration
-
-    try {
-      await sendgrid.send({
-        from: {
-          email: template.from,
-          name: template.senderName,
-        },
-        to: params.to,
+    await MailQueue.add(
+      template.subject,
+      {
+        template,
         subject,
         html,
-      });
-      return {
-        data: {},
-        message: 'email sent',
-      };
-    } catch (error) {
-      generalLogger.error('unable to send email', error);
-      throw new ServiceError('unable to send email');
-    }
+        params,
+      },
+      options,
+    );
+
+    return { data: 'Message is sending' };
   };
 }
