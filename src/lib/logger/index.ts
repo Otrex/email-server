@@ -1,10 +1,10 @@
 import { createLogger, format, transports } from 'winston';
 import { consoleFormat } from 'winston-console-format';
-import config, { AppEnvironmentEnum } from '../../configTypes';
+import { AppEnvironmentEnum } from '../../configTypes';
 
 const { TEST, LOCAL } = AppEnvironmentEnum;
 
-const consoleTransportOptions = [TEST, LOCAL].includes(config.app.env)
+const consoleTransportOptions = [TEST, LOCAL].includes(LOCAL)
   ? {
     handleExceptions: true,
     format: format.combine(

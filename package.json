@@ -1,5 +1,5 @@
 {
-  "name": "@packages/email-server",
+  "name": "@packages/email_server",
   "version": "0.0.1",
   "description": "Email Server",
   "main": "src/index.ts",
@@ -44,9 +44,6 @@
   "repository": {
     "type": "git",
     "url": "https://git.chigisoft.dev/packages/email-server.git"
-  },
-  "publishConfig": { 
-    "@packages:registry":"https://git.chigisoft.dev/api/v4/projects/378/packages/npm/"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.4",
