@@ -8,11 +8,12 @@ const connectionOptions: ConnectionOptions = {
   username: config.db.user,
   password: config.db.password,
   database: config.db.database,
-  entities: [`${__dirname}/src/database/entities/*.ts`, `${__dirname}/src/database/entities/*.js`],
-  migrations: [
-    `${__dirname}/src/database/migrations/*.ts`,
-    `${__dirname}/src/database/migrations/*.js`,
-  ],
+  entities: config.env.isTest
+    ? []
+    : [`${__dirname}/src/database/entities/*.ts`, `${__dirname}/src/database/entities/*.js`],
+  migrations: config.env.isTest
+    ? []
+    : [`${__dirname}/src/database/migrations/*.ts`, `${__dirname}/src/database/migrations/*.js`],
   synchronize: config.app.env === AppEnvironmentEnum.TEST,
   dropSchema: config.app.env === AppEnvironmentEnum.TEST,
   migrationsRun: config.app.env !== AppEnvironmentEnum.TEST,
