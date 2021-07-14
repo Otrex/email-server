@@ -16,8 +16,7 @@
     "migrate": "yarn typeorm migration:run",
     "test": "APP_ENV=test jest --runInBand --forceExit",
     "test:module": "APP_ENV=test jest ./test/e2e/module/* --runInBand --forceExit",
-    "prepare": "husky install",
-    "prepublish": "yarn build"
+    "prepare": "husky install && yarn build"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
