@@ -1,8 +1,8 @@
 {
-  "name": "@packages/email_server",
+  "name": "@dumo/email-server",
   "version": "0.0.1",
   "description": "Email Server",
-  "main": "src/index.ts",
+  "main": "build/src/index.ts",
   "license": "MIT",
   "scripts": {
     "start": "node build/src/index.js",
@@ -11,12 +11,13 @@
     "build": "rimraf ./build && tsc",
     "prettier": "prettier --write .",
     "lint": "eslint . --ext .ts --fix",
-    "prepare": "husky install",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "generate:migration": "yarn typeorm migration:generate -n",
     "migrate": "yarn typeorm migration:run",
     "test": "APP_ENV=test jest --runInBand --forceExit",
-    "test:module": "APP_ENV=test jest ./test/e2e/module/* --runInBand --forceExit"
+    "test:module": "APP_ENV=test jest ./test/e2e/module/* --runInBand --forceExit",
+    "prepare": "husky install",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
