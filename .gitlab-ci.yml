@@ -9,5 +9,6 @@ build:
   only:
     - tags
   script:
-    - echo "//git.chigisoft.dev/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" > .npmrc
+    - echo "//git.chigisoft.dev/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" > ~/.npmrc
+    - yarn && yarn build
     - npm publish
