@@ -3,13 +3,13 @@ import sendgrid from '@sendgrid/mail';
 import { generalLogger } from '../lib/logger';
 import { ServiceError } from '../lib/errors';
 
-export default async (job: Job, key: string) => {
+export default async (job: Job, sendgridApiKey: string) => {
   const {
     template, subject, html, params,
   } = job.data;
   try {
-    if (key) {
-      sendgrid.setApiKey(key);
+    if (sendgridApiKey) {
+      sendgrid.setApiKey(sendgridApiKey);
       await sendgrid.send({
         from: {
           email: template.from,

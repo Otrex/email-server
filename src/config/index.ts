@@ -1,5 +1,4 @@
 import env from 'dotenv';
-import express from 'express';
 
 env.config();
 
@@ -9,34 +8,6 @@ export enum AppEnvironmentEnum {
   DEVELOPMENT = 'development',
   STAGING = 'staging',
   PRODUCTION = 'production',
-}
-
-export const APPNAME = 'email-server';
-export interface Config {
-  app?: express.Application;
-  db: {
-    type: 'mysql' | 'postgres';
-    host: string;
-    port: number;
-    database: string;
-    user: string;
-    password: string;
-  };
-  redis: {
-    host: string; // localhost
-    port: number; // 6789
-  };
-  queue: {
-    concurrency: number;
-    limiter: {
-      max: number;
-      duration: number;
-    };
-  };
-  mail: {
-    key: string;
-  };
-  env?: string;
 }
 
 type MockAppConfig = {

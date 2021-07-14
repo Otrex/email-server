@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 import { consoleFormat } from 'winston-console-format';
-import { AppEnvironmentEnum } from '../../configTypes';
+import { AppEnvironmentEnum } from '../../config';
 
 const { TEST, LOCAL } = AppEnvironmentEnum;
 
@@ -37,7 +37,7 @@ const createComponentLogger = (component: string) => createLogger({
   transports: [new transports.Console(consoleTransportOptions)],
 });
 
-export const generalLogger = createComponentLogger('GENERAL');
+export const generalLogger = createComponentLogger('EMAILSERVER');
 export const routesLogger = createComponentLogger('ROUTES');
 export const errorLogger = createComponentLogger('ERROR');
 export const scriptLogger = createComponentLogger('SCRIPT');

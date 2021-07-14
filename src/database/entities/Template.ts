@@ -1,10 +1,13 @@
 import { Entity, Column } from 'typeorm';
-import { GenericEntity } from './generic';
+import GenericEntity from './generic';
 
-@Entity('email_template')
+@Entity()
 export default class Template extends GenericEntity {
   @Column()
   name!: string;
+
+  @Column()
+  key!: string;
 
   @Column({ nullable: true })
   from!: string;
@@ -17,7 +20,4 @@ export default class Template extends GenericEntity {
 
   @Column({ type: 'longtext', nullable: true })
   content!: string;
-
-  @Column()
-  slug!: string;
 }

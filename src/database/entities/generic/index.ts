@@ -1,7 +1,6 @@
-/* eslint-disable */
 import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-export abstract class GenericEntity {
+export default abstract class GenericEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

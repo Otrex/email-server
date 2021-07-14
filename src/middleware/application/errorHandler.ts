@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { Request, Response, NextFunction } from 'express';
 import {
   GenericError,
@@ -8,7 +9,7 @@ import {
   AuthorizationError,
 } from '../../lib/errors';
 import { errorLogger } from '../../lib/logger';
-import config from '../../configTypes';
+import config from '../../config';
 
 export default (
   err: GenericError,
@@ -29,10 +30,17 @@ export default (
         message: err.message,
       });
     case ValidationError.name:
+      const { errors } = err as ValidationError;
+      errorLogger.error('validation error', {
+        url: req.originalUrl,
+        method: req.method,
+        body: req.body,
+        errors,
+      });
       return res.status(err.statusCode).send({
         status: 'error',
         message: err.message,
-        errors: (err as ValidationError).errors,
+        errors,
       });
     default:
       errorLogger.error(err.message, {
@@ -44,7 +52,7 @@ export default (
       return res.status(500).send({
         status: 'error',
         message: 'an error occurred',
-        ...(['local', 'development'].includes(config.app.env) ? { stack: err.stack } : {}),
+        ...(['local', 'development', 'test'].includes(config.app.env) ? { stack: err.stack } : {}),
       });
   }
 };

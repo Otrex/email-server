@@ -1,4 +1,3 @@
-import DatabaseConnection from '../database/connection';
 import { scriptLogger } from '../lib/logger';
 
 export const script = async () => {
@@ -8,7 +7,6 @@ export const script = async () => {
 const run = async () => {
   if (require.main === module) {
     try {
-      await DatabaseConnection.connectTest();
       await script();
     } catch (e) {
       scriptLogger.error(e);

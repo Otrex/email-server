@@ -1,13 +1,15 @@
 import supertest, { SuperTest, Test } from 'supertest';
 import faker from 'faker';
-import app from '../../mocks';
 
-let server: SuperTest<Test>;
+import app from '../../app';
+import { setupTestServer } from '../..';
+
+const server: SuperTest<Test> = supertest(app);
 
 let templates: { id: string }[];
 
-beforeAll(() => {
-  server = supertest(app);
+beforeAll(async () => {
+  await setupTestServer();
 });
 
 describe('Template Router', () => {
@@ -16,7 +18,7 @@ describe('Template Router', () => {
       const res = await server.post('/email-server/templates').send({
         name: faker.company.companyName(),
       });
-      expect(res.statusCode).toEqual(200);
+      expect(res.status).toEqual(200);
     });
   });
 

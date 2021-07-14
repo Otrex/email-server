@@ -7,18 +7,20 @@ export type QueueConfig = {
   connection: {
     host: string; // RedisPort
     port: number;
+    password?: string;
   };
   limiter: {
     max: number;
     duration: number;
   };
-  key: string;
+  sendgridApiKey: string;
 };
+
 export default (config: QueueConfig) => {
   const worker = new Worker(
     QUEUE_NAME,
     async (job: Job) => {
-      await MailSender(job, config.key);
+      await MailSender(job, config.sendgridApiKey);
     },
     {
       connection: config.connection,
