@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class createTables1626279744087 implements MigrationInterface {
-  name = 'createTables1626279744087';
+export class createTables1626280241161 implements MigrationInterface {
+  name = 'createTables1626280241161';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('ALTER TABLE `email_template` CHANGE `from` `from` varchar(255) NULL');
