@@ -12,8 +12,6 @@ import sendUtility from './utils';
 export default (config: Config) => {
   if (config.app) config.app.use('/email-server', app);
 
-  const exportApp = app;
-
   const { dbConfig: databaseConnectionConfig, mailerConfig: mailingQueueConfig } = extractConfig(
     config,
   );
@@ -39,5 +37,5 @@ export default (config: Config) => {
       errorLogger.error(error);
     });
 
-  return { app: exportApp, sendUtility };
+  return { sendUtility };
 };

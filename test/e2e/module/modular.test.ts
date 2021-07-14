@@ -16,8 +16,6 @@ describe('Template Router', () => {
       const res = await server.post('/email-server/templates').send({
         name: faker.company.companyName(),
       });
-      // eslint-disable-next-line no-console
-      if (res.statusCode === 500 || res.statusCode === 404) console.log(res);
       expect(res.statusCode).toEqual(200);
     });
   });
