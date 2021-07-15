@@ -9,7 +9,9 @@ const databaseConfig = (config: EmailServerConfig) => ({
   username: config.db.user,
   password: config.db.password,
   database: config.db.database,
+  entityPrefix: '_email_server_',
   entities: [`${__dirname}/../database/entities/*.ts`, `${__dirname}/../database/entities/*.js`],
+  migrationsTableName: '_email_server_migrations',
   migrations: [
     `${__dirname}/../database/migrations/*.ts`,
     `${__dirname}/../database/migrations/*.js`,
@@ -29,6 +31,7 @@ const mailQueueConfig = (config: Partial<EmailServerConfig>) => ({
   connection: {
     host: config.redis!.host, // RedisPort
     port: config.redis!.port,
+    password: config.redis?.password,
   },
   limiter: {
     ...config.queue!.limiter,

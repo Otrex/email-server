@@ -8,9 +8,11 @@ const connectionOptions: ConnectionOptions = {
   username: config.db.user,
   password: config.db.password,
   database: config.db.database,
+  entityPrefix: '_email_server_',
   entities: config.env.isTest
     ? []
     : [`${__dirname}/src/database/entities/*.ts`, `${__dirname}/src/database/entities/*.js`],
+  migrationsTableName: '_email_server_migrations',
   migrations: config.env.isTest
     ? []
     : [`${__dirname}/src/database/migrations/*.ts`, `${__dirname}/src/database/migrations/*.js`],

@@ -54,7 +54,7 @@ const config: MockAppConfig = {
   },
 };
 
-const validateConfig = () => {
+export const validateConfig = () => {
   const missingKeys: string[] = [];
   Object.entries(config).forEach(([baseKey, baseValue]) => {
     Object.entries(baseValue).forEach(([key, value]) => {
@@ -69,7 +69,5 @@ const validateConfig = () => {
     process.exit(1);
   }
 };
-
-validateConfig();
 
 export default config;

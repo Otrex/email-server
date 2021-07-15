@@ -14,7 +14,19 @@ import app from './app';
 import TemplateService from './services/Template.service';
 
 export default class EmailServer {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private validateConfig = (config: EmailServerConfig) => {
+    // validate the config somehow
+    const valid = true;
+
+    if (!valid) {
+      throw Error('invalid config');
+    }
+  };
+
   public setup = async (config: EmailServerConfig) => {
+    this.validateConfig(config);
+
     try {
       config.app.use(config.path || '/email-server', app);
 
@@ -22,7 +34,7 @@ export default class EmailServer {
 
       const connection = await DatabaseConnection.connect(dbConfig);
 
-      const executor = new MigrationExecutor(connection, connection.createQueryRunner());
+      const executor = new MigrationExecutor(connection);
       await executor.executePendingMigrations();
       const { worker } = setupMailingQueue(mailerConfig);
       setupWorkerEvents(worker);

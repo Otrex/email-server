@@ -1,13 +1,14 @@
 {
   "name": "@dumo/email-server",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Email Server",
-  "main": "build/src/index.ts",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "license": "MIT",
   "scripts": {
     "start": "node build/src/index.js",
     "dev": "nodemon src/index.ts",
-    "dev:test": "node --nolazy -r ts-node/register test/mocks/server.ts",
+    "dev:test": "node --nolazy -r ts-node/register test/server.ts",
     "build": "rimraf ./build && tsc",
     "prettier": "prettier --write .",
     "lint": "eslint . --ext .ts --fix",
