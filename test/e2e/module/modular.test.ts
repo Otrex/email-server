@@ -85,4 +85,12 @@ describe('Template Router', () => {
       await new Promise((resolve) => setTimeout(resolve, 10000));
     });
   });
+
+  describe('Delete template', () => {
+    it('should delete template with templateId', async () => {
+      const res = await server.delete(`/email-server/templates/${templates[0].id}`).send();
+      expect(res.status).toEqual(200);
+      expect(res.body.data).toBeDefined();
+    });
+  });
 });

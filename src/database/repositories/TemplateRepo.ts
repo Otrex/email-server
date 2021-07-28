@@ -21,7 +21,6 @@ export default class TemplateRepo {
 
   public static getTemplates = async () => {
     return TemplateRepo.getRepository().find({
-      select: ['id', 'key', 'name', 'senderName', 'subject'],
       order: {
         createdAt: 'DESC',
       },
@@ -35,5 +34,9 @@ export default class TemplateRepo {
   public static updateTemplateById = async (id: string, updates: Partial<Template>) => {
     await TemplateRepo.getRepository().update(id, updates);
     return TemplateRepo.getTemplateById(id);
+  };
+
+  public static deleteTemplateById = async (template: Partial<Template>) => {
+    return TemplateRepo.getRepository().delete(template);
   };
 }
