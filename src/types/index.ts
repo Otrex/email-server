@@ -1,11 +1,12 @@
 import express from 'express';
+import { Connection } from 'typeorm';
 
 export const APP_NAME = 'email-server';
 
 export interface EmailServerConfig {
   app: express.Application;
   path?: string;
-  db: {
+  db?: {
     type: 'mysql' | 'postgres';
     host: string;
     port: number;
@@ -14,6 +15,7 @@ export interface EmailServerConfig {
     password: string;
     dropSchema?: boolean;
   };
+  connection?: Connection;
   redis: {
     host: string; // localhost
     port: number; // 6789

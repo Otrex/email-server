@@ -4,7 +4,11 @@ import { APP_NAME } from '../../types';
 
 export default class TemplateRepo {
   private static getRepository = () => {
-    return getConnection(APP_NAME).getRepository(Template);
+    try {
+      return getConnection(APP_NAME).getRepository(Template);
+    } catch (e) {
+      return getConnection().getRepository(Template);
+    }
   };
 
   public static getTemplateById = async (id: string) => {

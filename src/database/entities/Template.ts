@@ -1,7 +1,7 @@
 import { Entity, Column } from 'typeorm';
 import GenericEntity from './generic';
 
-@Entity()
+@Entity('_email_server_template')
 export default class Template extends GenericEntity {
   @Column()
   name!: string;

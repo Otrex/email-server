@@ -3,13 +3,13 @@ import { APP_NAME, EmailServerConfig } from '../types';
 
 const databaseConfig = (config: EmailServerConfig) => ({
   name: APP_NAME,
-  type: config.db.type,
-  host: config.db.host,
-  port: config.db.port,
-  username: config.db.user,
-  password: config.db.password,
-  database: config.db.database,
-  entityPrefix: '_email_server_',
+  type: config.db?.type,
+  host: config.db?.host,
+  port: config.db?.port,
+  username: config.db?.user,
+  password: config.db?.password,
+  database: config.db?.database,
+  // entityPrefix: !config.connection ? '_email_server_' : '',
   entities: [`${__dirname}/../database/entities/*.ts`, `${__dirname}/../database/entities/*.js`],
   migrationsTableName: '_email_server_migrations',
   migrations: [
@@ -17,7 +17,7 @@ const databaseConfig = (config: EmailServerConfig) => ({
     `${__dirname}/../database/migrations/*.js`,
   ],
   synchronize: false,
-  dropSchema: config.db.dropSchema,
+  dropSchema: config.db?.dropSchema,
   migrationsRun: false,
   logging: false,
   cli: {

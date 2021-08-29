@@ -1,4 +1,5 @@
-import { MigrationExecutor } from 'typeorm';
+import { Connection, MigrationExecutor } from 'typeorm';
+import path from 'path';
 import { EmailServerConfig } from './types';
 
 import { generalLogger } from './lib/logger';
@@ -13,7 +14,13 @@ import app from './app';
 
 import TemplateService from './services/Template.service';
 
+const HOME_DIR = __dirname;
 export default class EmailServer {
+  paths = {
+    entities: [path.join(HOME_DIR, 'database', 'entities', '**.*')],
+    migrations: [path.join(HOME_DIR, 'database', 'migrations', '**.*')],
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private validateConfig = (config: EmailServerConfig) => {
     // validate the config somehow
@@ -29,10 +36,15 @@ export default class EmailServer {
 
     try {
       config.app.use(config.path || '/email-server', app);
+      const { mailerConfig } = extractConfig(config);
+      let connection: Connection;
 
-      const { dbConfig, mailerConfig } = extractConfig(config);
-
-      const connection = await DatabaseConnection.connect(dbConfig);
+      if (config.connection) {
+        connection = config.connection;
+      } else {
+        const { dbConfig } = extractConfig(config);
+        connection = await DatabaseConnection.connect(dbConfig);
+      }
 
       const executor = new MigrationExecutor(connection);
       await executor.executePendingMigrations();
