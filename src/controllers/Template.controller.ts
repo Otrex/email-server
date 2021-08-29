@@ -13,6 +13,12 @@ export default class TemplateController {
     });
   });
 
+  public static deleteTemplate = wrapHandler((req: Request) => {
+    return TemplateService.deleteTemplate({
+      templateId: req.params.templateId,
+    });
+  });
+
   public static createTemplate = wrapHandler((req: Request) => {
     return TemplateService.createTemplate({
       ...req.body,

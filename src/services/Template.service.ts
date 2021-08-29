@@ -167,4 +167,15 @@ export default class TemplateService {
       ...params,
     });
   };
+
+  @Validate({
+    $$strict: 'remove',
+    templateId: { type: 'uuid' },
+  })
+  public static deleteTemplate = async (params: { templateId: string }) => {
+    await TemplateRepo.deleteTemplateById({ id: params.templateId });
+    return {
+      data: `Email template with id=${params.templateId} has been deleted successfully`,
+    };
+  };
 }
