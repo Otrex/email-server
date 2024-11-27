@@ -8,7 +8,7 @@ pull the test-update branch
 
 Use `yarn link <project_name>` to link it to the host end
 
-# To Setup
+# To Setup your project
 
 import setupEmailServer from 'email-server'
 
